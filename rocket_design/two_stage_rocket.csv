@@ -1,0 +1,10 @@
+name,type,length,diameter,thickness,material,comments
+Payload Fairing,cone,8877.0,3700.0,10,composite,Houses 15000 kg payload
+Second Stage Body,tube,9381.55574170867,3700.0,20,aluminum,Contains 90000 kg propellant
+Second Stage Engine Section,tube,50,3700.0,30,stainless steel,Engine mount structure
+Second Stage Nozzle,cone,3218.44425829133,2560.855686085537,10,inconel,"Expansion ratio: 40.0, Throat diameter: 404.9 mm"
+Interstage 0/1,tube,4120.0,3700.0,15,aluminum,Connects stages 0 and 1
+First Stage Body,tube,37327.355802275604,3700.0,20,aluminum,Contains 385000 kg propellant
+First Stage Engine Section,tube,50,3700.0,30,stainless steel,Engine mount structure
+First Stage Nozzle,cone,3872.6441977243944,3793.9237431030188,10,inconel,"Expansion ratio: 10.0, Throat diameter: 1199.7 mm"
+First Stage Fins,fins,12360.000000000002,555.0,10,titanium,Aerodynamic stabilizers (count=4)

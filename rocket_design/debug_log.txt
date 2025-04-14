@@ -1,0 +1,26 @@
+FreeCAD Debug Log
+===============
+
+Python version: 3.8.10 (tags/v3.8.10:3d8993a, May  3 2021, 11:48:03) [MSC v.1928 64 bit (AMD64)]
+Python executable: C:\Users\Isaia\AppData\Local\Programs\Python\Python38\python.exe
+Script path: debug_freecad.py
+
+System path:
+  C:\Users\Isaia\OneDrive\Documents\Coding\RocketDesign\rocket_design
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\python38.zip
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\DLLs
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\lib
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38
+  C:\Users\Isaia\AppData\Roaming\Python\Python38\site-packages
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\lib\site-packages
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\lib\site-packages\win32
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\lib\site-packages\win32\lib
+  C:\Users\Isaia\AppData\Local\Programs\Python\Python38\lib\site-packages\Pythonwin
+
+Added FreeCAD path: C:/Program Files/FreeCAD 1.0/bin
+
+ERROR: Module use of python311.dll conflicts with this version of Python.
+Traceback (most recent call last):
+  File "debug_freecad.py", line 35, in <module>
+    import FreeCAD
+ImportError: Module use of python311.dll conflicts with this version of Python.

@@ -1,0 +1,10 @@
+name,type,length,diameter,color,notes
+Payload Fairing,cone,1.2,1.7365388975758096,#E0E0E0,Houses payload
+Upper Stage Body,tube,3.6467316849092,1.7365388975758096,#DDDDDD,Upper stage tank section
+Upper Stage Engine Section,tube,1.0419233385454858,1.7365388975758096,#CCCCCC,Upper stage engine housing
+Upper Stage Nozzle,cone,0.5209616692727429,1.2155772283030666,#999999,LOX/LH2 vacuum optimized
+Interstage 0/1,cone,0.05,1.245178289042283,#AAAAAA,Direct staging coupler
+First Stage Body,tube,5.603302300690274,1.245178289042283,#96C8F0,First stage tank section
+First Stage Engine Section,tube,1.1206604601380545,1.245178289042283,#6AA6DD,First stage engine housing
+First Stage Nozzle,cone,0.7471069734253698,1.1206604601380545,#4D88C4,LOX/RP1 sea-level optimized
+First Stage Fins,fins,1.8677674335634245,0.8716248023295979,#4D88C4,"4 fins, 45 degree sweep"

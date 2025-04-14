@@ -1,0 +1,6 @@
+name,type,length,diameter,thickness,material,comments
+Payload Fairing,cone,227.64629253803648,500.0,10,composite,Houses 200 kg payload
+Stage 1 Body,tube,-2063.1567966421517,500.0,20,aluminum,Contains 65479.84169199205 kg propellant
+Stage 1 Engine Section,tube,50,500.0,30,stainless steel,Engine mount structure
+Stage 1 Nozzle,cone,3442.831296872676,2882.824580230088,10,inconel,"Expansion ratio: 25.0, Throat diameter: 576.6 mm"
+First Stage Fins,fins,413.90235006915725,75.0,10,titanium,Aerodynamic stabilizers (count=4)

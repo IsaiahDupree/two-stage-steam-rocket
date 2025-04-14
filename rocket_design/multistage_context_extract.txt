@@ -1,0 +1,95 @@
+# Rocket Design Parameters Extracted from PDF
+
+Source: multistage context.pdf
+Word Count: 1637
+
+## Design Parameters
+
+### Thrust
+Found 3 references
+Examples:
+- 106
+- 106
+- 106
+
+### Mass
+Found 5 references
+Examples:
+- 1000
+- 1000
+- 9.68
+- 10
+- 9.68
+
+### Nozzle
+Found 1 references
+Examples:
+- 94
+
+### Velocity
+Found 1 references
+Examples:
+- 2432
+
+### Altitude
+Found 8 references
+Examples:
+- 44.88
+- 7.56
+- 9.8
+- 3332
+- 0.25
+
+### Equations
+Found 81 references
+Examples:
+- --- PAGE 1 ---
+- at the nozzle inlet that follows from the area ratioA1/Athbased on the choked throat
+- Mth=1
+-  Assum-ing constant momentum thrust with altitude, estimate the
+- 88 ft2DiameterD2=(4A2∕)1∕2≈7
+
+## Key Design Sections
+
+### Nozzle Design
+Found 6 relevant paragraphs
+Excerpt:
+--- PAGE 1 ---
+830 Chapter 12•Chemical Rocket and Hypersonic Propulsion
+at the nozzle inlet that follows from the area ratioA1/Athbased on the choked throat
+Mth=1.0 condition. Note the parameter trends inside a rocket engine shown in Figure 12.7.
+E X A M P L E 1 2 . 1
+The Space Shuttle Main Engine (SSME) produces 375,000
+lb of thrust at sea level and 470,000 lb at altitude. Assum-ing constant momentum thrust with altitude, estimate the
+diameterD2of the SSME nozzle exit areaA2.
+SOLUTION
+The di...
+
+### Propellant
+Found 5 relevant paragraphs
+Excerpt:
+--- PAGE 1 ---
+830 Chapter 12•Chemical Rocket and Hypersonic Propulsion
+at the nozzle inlet that follows from the area ratioA1/Athbased on the choked throat
+Mth=1.0 condition. Note the parameter trends inside a rocket engine shown in Figure 12.7.
+E X A M P L E 1 2 . 1
+The Space Shuttle Main Engine (SSME) produces 375,000
+lb of thrust at sea level and 470,000 lb at altitude. Assum-ing constant momentum thrust with altitude, estimate the
+diameterD2of the SSME nozzle exit areaA2.
+SOLUTION
+The di...
+
+### Aerodynamics
+Found 1 relevant paragraphs
+Excerpt:
+--- PAGE 6 ---
+12.8 Flight Performance 835
+E X A M P L E 1 2 . 4
+A liquid propellant rocket uses hydrogen fuel and oxygen
+for combustion. The oxidizer-to-fuel mass ratio is 4.02. The
+ratio of specic heats of the combustion gas is=1.26 andthe chamber pressure is 1000 psia. Use Equation 12.18 to
+estimate combustion gas constantRas well as the molecu-
+lar weight of the mixture, MW.
+SOLUTION
+From Table 12.1, we readTc=2999 K andc∗=2432 m/s
+corresponding to the liquid propellant described above....

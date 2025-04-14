@@ -1,0 +1,9 @@
+name,type,length,diameter,thickness,material,comments
+Nosecone,cone,150,50,2,aluminum,Aerodynamic nosecone for reduced drag
+Main Body Tube,tube,300,50,2,composite,Primary structural component
+Fins,fins,80,60,3,carbon fiber,Stabilizing fins (count=4)
+Motor Mount,cylinder,120,30,5,steel,Reinforced for high temperature
+Payload Bay,tube,100,50,2,composite,Protected compartment for electronics
+Recovery Section,tube,80,50,2,composite,Houses parachute deployment system
+Booster Stage,tube,200,60,3,aluminum,Secondary propulsion stage
+Transition Section,cone,60,60,2,composite,Connects booster to main body

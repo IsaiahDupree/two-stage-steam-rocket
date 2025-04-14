@@ -1,0 +1,195 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Two-Stage Rocket Design Macro for FreeCAD
+# To use: Open FreeCAD and run this macro through Macro → Macros... menu
+
+import FreeCAD as App
+import Part
+import math
+import Draft
+import os
+
+# Configuration parameters
+rocket_config = {
+    "total_length": 5000,      # mm
+    "max_diameter": 500,       # mm
+    "first_stage_length_ratio": 0.6,
+    "nose_cone_length_ratio": 0.15,
+    "fin_count": 4
+}
+
+# Engine configuration
+engine_config = {
+    "throat_diameter": 30,     # mm
+    "exit_diameter": 150,      # mm
+    "length": 300,             # mm
+}
+
+# Ensure we have a document
+if App.ActiveDocument is None:
+    doc = App.newDocument("TwoStageRocket")
+else:
+    doc = App.ActiveDocument
+
+# Calculate dimensions
+total_length = rocket_config["total_length"]
+max_diameter = rocket_config["max_diameter"]
+first_stage_length = total_length * rocket_config["first_stage_length_ratio"]
+second_stage_length = total_length * (1 - rocket_config["first_stage_length_ratio"] - rocket_config["nose_cone_length_ratio"])
+nose_cone_length = total_length * rocket_config["nose_cone_length_ratio"]
+fin_count = rocket_config["fin_count"]
+
+# Create first stage
+first_stage = Part.makeCylinder(max_diameter/2, first_stage_length, 
+                               App.Vector(0, 0, 0), App.Vector(0, 0, 1))
+first_stage_obj = doc.addObject("Part::Feature", "FirstStage")
+first_stage_obj.Shape = first_stage
+first_stage_obj.Label = "First Stage Body"
+
+# Create second stage (slightly smaller diameter)
+second_stage_diameter = max_diameter * 0.9
+second_stage = Part.makeCylinder(second_stage_diameter/2, second_stage_length,
+                                App.Vector(0, 0, first_stage_length),
+                                App.Vector(0, 0, 1))
+second_stage_obj = doc.addObject("Part::Feature", "SecondStage")
+second_stage_obj.Shape = second_stage
+second_stage_obj.Label = "Second Stage Body"
+
+# Create nose cone
+nose_cone = Part.makeCone(second_stage_diameter/2, 0, nose_cone_length,
+                         App.Vector(0, 0, first_stage_length + second_stage_length),
+                         App.Vector(0, 0, 1))
+nose_cone_obj = doc.addObject("Part::Feature", "NoseCone")
+nose_cone_obj.Shape = nose_cone
+nose_cone_obj.Label = "Nose Cone"
+
+# Create fins
+fin_height = max_diameter * 0.8
+fin_length = first_stage_length * 0.3
+fin_thickness = 10  # mm
+
+for i in range(fin_count):
+    angle = 360 / fin_count * i
+    angle_rad = math.radians(angle)
+    
+    # Create fin shape
+    fin = Part.makeBox(fin_thickness, fin_height, fin_length)
+    
+    # Rotate and position fin
+    fin.rotate(App.Vector(0, 0, 0), App.Vector(0, 0, 1), angle)
+    
+    # Position at correct radius and height
+    radius_offset = (max_diameter / 2) - (fin_thickness / 2)
+    fin.translate(App.Vector(
+        math.cos(angle_rad) * radius_offset,
+        math.sin(angle_rad) * radius_offset,
+        first_stage_length * 0.1
+    ))
+    
+    # Add to document
+    fin_obj = doc.addObject("Part::Feature", f"Fin_{i+1}")
+    fin_obj.Shape = fin
+    fin_obj.Label = f"Fin {i+1}"
+
+# Create engine nozzle
+throat_d = engine_config["throat_diameter"]
+exit_d = engine_config["exit_diameter"]
+nozzle_length = engine_config["length"]
+
+# Create nozzle as a truncated cone
+nozzle = Part.makeCone(throat_d/2, exit_d/2, nozzle_length,
+                      App.Vector(0, 0, -nozzle_length),
+                      App.Vector(0, 0, 1))
+nozzle_obj = doc.addObject("Part::Feature", "Nozzle")
+nozzle_obj.Shape = nozzle
+nozzle_obj.Label = "Engine Nozzle"
+
+# Create stage separation mechanism
+separation_height = 50  # mm
+outer_radius = max_diameter / 2
+inner_radius = max_diameter * 0.8 / 2
+
+# Create a tube (hollow cylinder)
+outer_cylinder = Part.makeCylinder(outer_radius, separation_height, 
+                                  App.Vector(0, 0, first_stage_length - separation_height),
+                                  App.Vector(0, 0, 1))
+inner_cylinder = Part.makeCylinder(inner_radius, separation_height, 
+                                  App.Vector(0, 0, first_stage_length - separation_height),
+                                  App.Vector(0, 0, 1))
+
+separation_ring = outer_cylinder.cut(inner_cylinder)
+
+# Add separation charges
+charge_count = 4
+charge_radius = 10
+charge_height = 20
+
+for i in range(charge_count):
+    angle = 360 / charge_count * i
+    angle_rad = math.radians(angle)
+    position = App.Vector(
+        math.cos(angle_rad) * (outer_radius + inner_radius) / 2,
+        math.sin(angle_rad) * (outer_radius + inner_radius) / 2,
+        first_stage_length - separation_height/2 - charge_height/2
+    )
+    
+    charge = Part.makeCylinder(charge_radius, charge_height, position, App.Vector(0, 0, 1))
+    separation_ring = separation_ring.fuse(charge)
+
+# Add to document
+sep_obj = doc.addObject("Part::Feature", "StageSeparation")
+sep_obj.Shape = separation_ring
+sep_obj.Label = "Stage Separation Mechanism"
+
+# Create pressure vessel in the first stage
+pressure_vessel_length = first_stage_length * 0.7
+pressure_vessel_diameter = max_diameter * 0.8
+wall_thickness = 5
+
+# Outer cylinder
+pv_outer = Part.makeCylinder(pressure_vessel_diameter/2, pressure_vessel_length,
+                            App.Vector(0, 0, first_stage_length * 0.15),
+                            App.Vector(0, 0, 1))
+# Inner cylinder for hollowing
+pv_inner = Part.makeCylinder(pressure_vessel_diameter/2 - wall_thickness, pressure_vessel_length,
+                            App.Vector(0, 0, first_stage_length * 0.15),
+                            App.Vector(0, 0, 1))
+# Hollow pressure vessel
+pressure_vessel = pv_outer.cut(pv_inner)
+
+# Add to document
+pv_obj = doc.addObject("Part::Feature", "PressureVessel")
+pv_obj.Shape = pressure_vessel
+pv_obj.Label = "Pressure Vessel"
+
+# Refresh the document
+doc.recompute()
+
+# Set visual properties for better display
+try:
+    # Try to set colors if we have a GUI
+    import FreeCADGui
+    FreeCADGui.ActiveDocument.getObject("FirstStage").ShapeColor = (0.8, 0.8, 0.8)
+    FreeCADGui.ActiveDocument.getObject("SecondStage").ShapeColor = (0.9, 0.9, 0.9)
+    FreeCADGui.ActiveDocument.getObject("NoseCone").ShapeColor = (0.9, 0.9, 0.9)
+    FreeCADGui.ActiveDocument.getObject("StageSeparation").ShapeColor = (0.6, 0.6, 0.8)
+    FreeCADGui.ActiveDocument.getObject("PressureVessel").ShapeColor = (0.7, 0.7, 0.85)
+    FreeCADGui.ActiveDocument.getObject("Nozzle").ShapeColor = (0.9, 0.5, 0.5)
+    
+    for i in range(fin_count):
+        FreeCADGui.ActiveDocument.getObject(f"Fin_{i+1}").ShapeColor = (0.7, 0.7, 0.7)
+except:
+    # No GUI available
+    pass
+
+# Zoom to fit all objects
+try:
+    import FreeCADGui
+    FreeCADGui.SendMsgToActiveView("ViewFit")
+except:
+    pass
+
+print("Two-Stage Rocket model created successfully.")
+print("You can now save the file or export it to various CAD formats.")
+print("Recommended: Use File > Export to save as STEP or STL format.")

@@ -1,0 +1,42 @@
+===============================================
+STEAM ROCKET DESIGN AND ANALYSIS REPORT
+===============================================
+
+1. PRESSURE VESSEL SPECIFICATIONS
+-----------------------------------------------
+Chamber Pressure: 2.00 MPa
+Chamber Temperature: 400.00°C
+Vessel Diameter: 20.00 cm
+Vessel Length: 40.00 cm
+Material Yield Strength: 500.00 MPa
+Safety Factor: 2.00
+Required Wall Thickness: 1.00 mm
+Vessel Mass (empty): 2.96 kg
+Vessel Volume (internal): 16.76 liters
+Water Capacity: 14.24 kg
+
+2. NOZZLE SPECIFICATIONS
+-----------------------------------------------
+Throat Diameter: 15.00 mm
+Exit Diameter: 45.00 mm
+Expansion Ratio: 9.00
+Throat Area: 1.77 cm²
+Exit Area: 15.90 cm²
+
+3. PERFORMANCE CALCULATIONS
+-----------------------------------------------
+Exhaust Velocity: 972.65 m/s
+Mass Flow Rate: 0.4265 kg/s
+Thrust: 414.85 N (0.41 kN)
+Specific Impulse: 99.18 seconds
+Burn Time: 33.39 seconds
+Total Impulse: 13.85 kN·s
+
+4. DESIGN RECOMMENDATIONS
+-----------------------------------------------
+- Wall thickness is below 3mm, consider increasing for manufacturing ease
+- Thrust may be insufficient for meaningful flight, consider increasing chamber pressure
+
+===============================================
+END OF REPORT
+===============================================

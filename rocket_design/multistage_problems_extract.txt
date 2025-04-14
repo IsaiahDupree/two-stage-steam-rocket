@@ -1,0 +1,111 @@
+# Rocket Design Parameters Extracted from PDF
+
+Source: multistage rocket problems.pdf
+Word Count: 1386
+
+## Design Parameters
+
+### Mass
+Found 10 references
+Examples:
+- 2393
+- 1000
+- 000
+- 000
+- 500
+
+### Nozzle
+Found 2 references
+Examples:
+- 235.5
+- 2200
+
+### Velocity
+Found 4 references
+Examples:
+- 9.70
+- 3500
+- 2500
+- 2200
+
+### Altitude
+Found 12 references
+Examples:
+- 235.5
+- 1430
+- 3500
+- 1.5
+- 9.70
+
+### Equations
+Found 75 references
+Examples:
+- --- PAGE 1 ---
+-  NASA SP-8089, “Liquid Rocket Engine Injectors,”
+-  NASASP-8120, “Liquid Rocket Engine Nozzles,” July
+- Rates in Rocket-Engine Thrust Chambers,” Technical
+- Report Number 32-244 Jet Propulsion Laboratory, Cal-
+
+## Key Design Sections
+
+### Nozzle Design
+Found 2 relevant paragraphs
+Excerpt:
+--- PAGE 1 ---
+Problems 899
+11. Kerrebrock, J.L., GasTurbines and Aircraft Engines, 2nd
+edition, MIT Press, Cambridge, MA, 1992.
+12. Kubota, N., “Survey of Rocket Propellants and their
+Combustion Characteristics,” Chapter 1 inFundamentals
+of Solid Propellant Combustion, Kuo, K.K. and Summer-
+eld, M. (Eds), AIAA Progress Series in Astronautics
+and Aeronautics, Vol. 90, AIAA Inc., Reston, V A, 1984.
+13. NASA SP-8089, “Liquid Rocket Engine Injectors,”
+March 1976.
+14. NASASP-8120, “Liquid Rocket...
+
+### Propellant
+Found 2 relevant paragraphs
+Excerpt:
+--- PAGE 1 ---
+Problems 899
+11. Kerrebrock, J.L., GasTurbines and Aircraft Engines, 2nd
+edition, MIT Press, Cambridge, MA, 1992.
+12. Kubota, N., “Survey of Rocket Propellants and their
+Combustion Characteristics,” Chapter 1 inFundamentals
+of Solid Propellant Combustion, Kuo, K.K. and Summer-
+eld, M. (Eds), AIAA Progress Series in Astronautics
+and Aeronautics, Vol. 90, AIAA Inc., Reston, V A, 1984.
+13. NASA SP-8089, “Liquid Rocket Engine Injectors,”
+March 1976.
+14. NASASP-8120, “Liquid Rocket...
+
+### Aerodynamics
+Found 2 relevant paragraphs
+Excerpt:
+--- PAGE 1 ---
+Problems 899
+11. Kerrebrock, J.L., GasTurbines and Aircraft Engines, 2nd
+edition, MIT Press, Cambridge, MA, 1992.
+12. Kubota, N., “Survey of Rocket Propellants and their
+Combustion Characteristics,” Chapter 1 inFundamentals
+of Solid Propellant Combustion, Kuo, K.K. and Summer-
+eld, M. (Eds), AIAA Progress Series in Astronautics
+and Aeronautics, Vol. 90, AIAA Inc., Reston, V A, 1984.
+13. NASA SP-8089, “Liquid Rocket Engine Injectors,”
+March 1976.
+14. NASASP-8120, “Liquid Rocket...
+
+### Structural
+Found 1 relevant paragraphs
+Excerpt:
+--- PAGE 2 ---
+900 Chapter 12•Chemical Rocket and Hypersonic Propulsion
+drag coefcient is approximated to be 0.25, the vehicle initial
+mass ism0=100, 000 kg, and the vehicle (maximum) frontal
+cross-sectional areaAfis 5 m2. For a burn time of 100 s, calcu-
+late the rocket terminal speed while neglecting gravitational
+effect.
+12.9In comparing theight performance of a single-
+stage with a two-stage rocket, let us consider the two rockets
+have the same initial massm0,the same payload massmL,and...

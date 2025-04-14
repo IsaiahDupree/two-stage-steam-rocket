@@ -1,0 +1,421 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+FreeCAD Macro for Steam Rocket Model Generation
+This macro creates a two-stage steam rocket based on design specifications
+"""
+
+import os
+import sys
+import math
+import FreeCAD as App
+import Part
+from FreeCAD import Base
+
+print("Starting Steam Rocket Model Generation...")
+
+# Rocket configuration from the design report
+rocket_config = {
+    # Overall dimensions
+    "first_stage_length": 7200,        # mm (7.2 meters)
+    "first_stage_diameter": 1200,      # mm (1.2 meters)
+    "second_stage_length": 5200,       # mm (5.2 meters)
+    "second_stage_diameter": 800,      # mm (0.8 meters)
+    
+    # Nosecone
+    "nosecone_length": 1000,           # mm (1.0 meter) - part of second stage length
+    "nosecone_shape": "ogive",         # ogive shape for better aerodynamics
+    
+    # Fins
+    "fin_count": 4,
+    "fin_height": 400,                 # mm
+    "fin_root_chord": 800,             # mm
+    "fin_tip_chord": 400,              # mm
+    "fin_sweep": 300,                  # mm
+    "fin_thickness": 10,               # mm
+}
+
+# Engine configuration from the design report
+engine_config = {
+    # First Stage Nozzle - Enlarged for more realistic proportions
+    "first_stage_throat_diameter": 200,    # mm (20 cm)
+    "first_stage_exit_diameter": 600,      # mm (60 cm)
+    "first_stage_nozzle_length": 800,      # mm (80 cm)
+    
+    # Second Stage Nozzle - Enlarged for more realistic proportions
+    "second_stage_throat_diameter": 120,    # mm (12 cm)
+    "second_stage_exit_diameter": 480,      # mm (48 cm)
+    "second_stage_nozzle_length": 600,      # mm (60 cm)
+    
+    # Pressure vessels - Enlarged for better proportion
+    "first_stage_vessel_length": 3000,      # mm (3.0 m)
+    "first_stage_vessel_diameter": 900,      # mm (90 cm)
+    "first_stage_wall_thickness": 6,         # mm
+    
+    "second_stage_vessel_length": 1800,      # mm (1.8 m)
+    "second_stage_vessel_diameter": 600,     # mm (60 cm)
+    "second_stage_wall_thickness": 2.5,      # mm
+}
+
+def create_ogive_nosecone(length, diameter, doc, name="NoseCone"):
+    """
+    Create an ogive-shaped nosecone using a simpler approach with rotational extrusion
+    """
+    # Create the profile curve
+    radius = diameter / 2
+    num_points = 30
+    
+    # Create points for the ogive profile
+    points = []
+    
+    # Start at the nose tip
+    points.append(Base.Vector(0, 0, length))
+    
+    # Create the curved ogive shape
+    for i in range(1, num_points):
+        z = length * (1 - i/num_points)
+        y = radius * math.sqrt(1 - (z/length)**2)
+        points.append(Base.Vector(0, y, z))
+    
+    # End at the base radius
+    points.append(Base.Vector(0, radius, 0))
+    
+    # Create closed polygon from base to center
+    points.append(Base.Vector(0, 0, 0))
+    points.append(Base.Vector(0, 0, length)) # Back to start
+    
+    # Create a wire from the points
+    wire = Part.makePolygon(points)
+    
+    # Create a face from the wire
+    face = Part.Face(wire)
+    
+    # Rotate the face around the Z-axis to create the nosecone
+    nose_shape = face.revolve(Base.Vector(0,0,0), Base.Vector(0,0,1), 360)
+    
+    # Add to document
+    obj = doc.addObject("Part::Feature", name)
+    obj.Shape = nose_shape
+    
+    return obj
+
+def create_fin(root_chord, tip_chord, height, sweep, thickness, doc, name="Fin"):
+    """
+    Create a swept fin with the given dimensions
+    """
+    # Create points for the fin profile
+    p1 = Base.Vector(0, 0, 0)                     # Root leading edge
+    p2 = Base.Vector(root_chord, 0, 0)            # Root trailing edge
+    p3 = Base.Vector(root_chord-sweep, height, 0) # Tip trailing edge
+    p4 = Base.Vector(root_chord-sweep-tip_chord, height, 0) # Tip leading edge
+    
+    # Create a face from the points
+    wire = Part.makePolygon([p1, p2, p3, p4, p1])
+    face = Part.Face(wire)
+    
+    # Extrude the face to create a solid
+    fin_solid = face.extrude(Base.Vector(0, 0, thickness))
+    
+    # Add to document
+    obj = doc.addObject("Part::Feature", name)
+    obj.Shape = fin_solid
+    
+    return obj
+
+def create_nozzle(throat_diameter, exit_diameter, length, doc, name="Nozzle"):
+    """
+    Create a rocket engine nozzle
+    """
+    # Create the nozzle as a truncated cone
+    nozzle = Part.makeCone(throat_diameter/2, exit_diameter/2, length)
+    
+    # Add to document
+    obj = doc.addObject("Part::Feature", name)
+    obj.Shape = nozzle
+    
+    return obj
+
+def create_pressure_vessel(diameter, length, wall_thickness, doc, name="PressureVessel"):
+    """
+    Create a pressure vessel with the specified wall thickness
+    """
+    # Create outer cylinder
+    outer = Part.makeCylinder(diameter/2, length)
+    
+    # Create inner cylinder for hollowing
+    inner_diameter = diameter - 2*wall_thickness
+    inner = Part.makeCylinder(inner_diameter/2, length - wall_thickness)
+    inner.translate(Base.Vector(0, 0, wall_thickness))
+    
+    # Cut inner from outer
+    vessel = outer.cut(inner)
+    
+    # Add to document
+    obj = doc.addObject("Part::Feature", name)
+    obj.Shape = vessel
+    
+    return obj
+
+def create_stage_separation_system(diameter, height, doc, name="StageSeparation"):
+    """
+    Create a simplified stage separation system
+    """
+    # Create main cylinder for the separation ring
+    ring_thickness = 20  # mm
+    outer = Part.makeCylinder(diameter/2, height)
+    inner = Part.makeCylinder(diameter/2 - ring_thickness, height)
+    ring = outer.cut(inner)
+    
+    # Add bolt details along the circumference
+    bolt_count = 12
+    bolt_diameter = 10
+    bolt_height = 15
+    bolt_radius = diameter/2 - ring_thickness/2
+    
+    bolts = []
+    for i in range(bolt_count):
+        angle = 360 / bolt_count * i
+        angle_rad = math.radians(angle)
+        x = bolt_radius * math.cos(angle_rad)
+        y = bolt_radius * math.sin(angle_rad)
+        
+        bolt = Part.makeCylinder(bolt_diameter/2, bolt_height, 
+                                Base.Vector(x, y, -bolt_height/2), 
+                                Base.Vector(0, 0, 1))
+        bolts.append(bolt)
+    
+    # Combine all bolts with the ring
+    for bolt in bolts:
+        ring = ring.fuse(bolt)
+    
+    # Add to document
+    obj = doc.addObject("Part::Feature", name)
+    obj.Shape = ring
+    
+    return obj
+
+# Create output directories if they don't exist
+script_dir = os.path.dirname(os.path.abspath(__file__))
+output_dir = os.path.join(script_dir, "output")
+models_dir = os.path.join(output_dir, "models")
+os.makedirs(models_dir, exist_ok=True)
+
+# Create a new document
+doc = App.newDocument("TwoStageRocket")
+
+# --- Create First Stage ---
+print("Creating first stage...")
+first_stage = Part.makeCylinder(
+    rocket_config["first_stage_diameter"]/2, 
+    rocket_config["first_stage_length"]
+)
+first_stage_obj = doc.addObject("Part::Feature", "FirstStageBody")
+first_stage_obj.Shape = first_stage
+
+# --- Create Second Stage ---
+print("Creating second stage...")
+second_stage = Part.makeCylinder(
+    rocket_config["second_stage_diameter"]/2, 
+    rocket_config["second_stage_length"] - rocket_config["nosecone_length"],
+    Base.Vector(0, 0, rocket_config["first_stage_length"]),
+    Base.Vector(0, 0, 1)
+)
+second_stage_obj = doc.addObject("Part::Feature", "SecondStageBody")
+second_stage_obj.Shape = second_stage
+
+# --- Create Nose Cone ---
+print("Creating nose cone...")
+nose_cone = create_ogive_nosecone(
+    rocket_config["nosecone_length"],
+    rocket_config["second_stage_diameter"],
+    doc,
+    "NoseCone"
+)
+# Position at the top of the second stage
+nose_cone.Placement.Base = Base.Vector(
+    0, 0, 
+    rocket_config["first_stage_length"] + 
+    rocket_config["second_stage_length"] - 
+    rocket_config["nosecone_length"]
+)
+
+# --- Create First Stage Fins ---
+print(f"Creating {rocket_config['fin_count']} fins for first stage...")
+# Position fins at the bottom of the first stage for stability
+fin_base_z = rocket_config["first_stage_length"] * 0.1  # 10% up from the bottom
+
+for i in range(rocket_config["fin_count"]):
+    angle = 360 / rocket_config["fin_count"] * i
+    fin = create_fin(
+        rocket_config["fin_root_chord"],
+        rocket_config["fin_tip_chord"],
+        rocket_config["fin_height"],
+        rocket_config["fin_sweep"],
+        rocket_config["fin_thickness"],
+        doc,
+        f"FirstStageFin_{i+1}"
+    )
+    
+    # Rotate around Z axis to position the fin correctly
+    fin.Placement.Rotation = App.Rotation(App.Vector(0, 0, 1), angle)
+    
+    # Position at the correct height and radius
+    # The fin needs to be positioned so it extends outward from the rocket body
+    fin.Placement.Base = Base.Vector(
+        -rocket_config["fin_thickness"] / 2,  # Center on the X axis 
+        0,                                  # Center on the Y axis
+        fin_base_z                          # Proper height on Z axis
+    )
+
+# --- Create Second Stage Fins ---
+print(f"Creating {rocket_config['fin_count']} fins for second stage...")
+# Use smaller fins for the second stage
+second_stage_fin_height = rocket_config["fin_height"] * 0.7  # 70% the size of first stage fins
+second_stage_fin_root_chord = rocket_config["fin_root_chord"] * 0.7
+second_stage_fin_tip_chord = rocket_config["fin_tip_chord"] * 0.7
+second_stage_fin_sweep = rocket_config["fin_sweep"] * 0.7
+
+# Position fins at the bottom of the second stage for stability
+second_stage_fin_base_z = rocket_config["first_stage_length"] + (rocket_config["second_stage_length"] * 0.1)
+
+for i in range(rocket_config["fin_count"]):
+    angle = 360 / rocket_config["fin_count"] * i
+    
+    # Create a slightly smaller fin for the second stage
+    fin = create_fin(
+        second_stage_fin_root_chord,
+        second_stage_fin_tip_chord,
+        second_stage_fin_height,
+        second_stage_fin_sweep,
+        rocket_config["fin_thickness"],
+        doc,
+        f"SecondStageFin_{i+1}"
+    )
+    
+    # Rotate around Z axis
+    fin.Placement.Rotation = App.Rotation(App.Vector(0, 0, 1), angle)
+    
+    # Position at the correct height and radius
+    fin.Placement.Base = Base.Vector(
+        -rocket_config["fin_thickness"] / 2,  # Center on X axis
+        0,                                  # Center on Y axis
+        second_stage_fin_base_z             # Proper height on Z axis
+    )
+
+# --- Create First Stage Engine Nozzle ---
+print("Creating first stage engine nozzle...")
+first_nozzle = create_nozzle(
+    engine_config["first_stage_throat_diameter"],
+    engine_config["first_stage_exit_diameter"],
+    engine_config["first_stage_nozzle_length"],
+    doc,
+    "FirstStageNozzle"
+)
+# Position at the bottom of the first stage
+first_nozzle.Placement.Base = Base.Vector(0, 0, 0)
+first_nozzle.Placement.Rotation = App.Rotation(Base.Vector(1, 0, 0), 180)
+
+# --- Create Second Stage Engine Nozzle ---
+print("Creating second stage engine nozzle...")
+second_nozzle = create_nozzle(
+    engine_config["second_stage_throat_diameter"],
+    engine_config["second_stage_exit_diameter"],
+    engine_config["second_stage_nozzle_length"],
+    doc,
+    "SecondStageNozzle"
+)
+# Position at the bottom of the second stage
+second_nozzle.Placement.Base = Base.Vector(0, 0, rocket_config["first_stage_length"])
+second_nozzle.Placement.Rotation = App.Rotation(Base.Vector(1, 0, 0), 180)
+
+# --- Create First Stage Pressure Vessel ---
+print("Creating first stage pressure vessel...")
+first_vessel = create_pressure_vessel(
+    engine_config["first_stage_vessel_diameter"],
+    engine_config["first_stage_vessel_length"],
+    engine_config["first_stage_wall_thickness"],
+    doc,
+    "FirstStagePressureVessel"
+)
+# Position inside the first stage, centered
+first_vessel_z = rocket_config["first_stage_length"] / 2 - engine_config["first_stage_vessel_length"] / 2
+first_vessel.Placement.Base = Base.Vector(0, 0, first_vessel_z)
+
+# --- Create Second Stage Pressure Vessel ---
+print("Creating second stage pressure vessel...")
+second_vessel = create_pressure_vessel(
+    engine_config["second_stage_vessel_diameter"],
+    engine_config["second_stage_vessel_length"],
+    engine_config["second_stage_wall_thickness"],
+    doc,
+    "SecondStagePressureVessel"
+)
+# Position inside the second stage, centered
+second_vessel_z = rocket_config["first_stage_length"] + (rocket_config["second_stage_length"] - rocket_config["nosecone_length"]) / 2 - engine_config["second_stage_vessel_length"] / 2
+second_vessel.Placement.Base = Base.Vector(0, 0, second_vessel_z)
+
+# --- Create Stage Separation System ---
+print("Creating stage separation system...")
+separation = create_stage_separation_system(
+    rocket_config["second_stage_diameter"],
+    50,  # height in mm
+    doc,
+    "StageSeparationSystem"
+)
+# Position at the interface between stages
+separation.Placement.Base = Base.Vector(0, 0, rocket_config["first_stage_length"] - 25)
+
+# Refresh the document
+doc.recompute()
+
+# Save the document
+fcstd_file = os.path.join(models_dir, "two_stage_steam_rocket.FCStd")
+doc.saveAs(fcstd_file)
+print(f"Saved FreeCAD document to: {fcstd_file}")
+
+# Export to STEP format
+try:
+    step_file = os.path.join(models_dir, "two_stage_steam_rocket.step")
+    
+    # Using Import module
+    try:
+        import Import
+        Import.export([obj for obj in doc.Objects if hasattr(obj, "Shape")], step_file)
+        print(f"Exported STEP file to: {step_file}")
+    except Exception as e:
+        print(f"Could not export using Import module: {e}")
+        # Using Part module directly
+        compound = Part.Compound([obj.Shape for obj in doc.Objects if hasattr(obj, "Shape")])
+        compound.exportStep(step_file)
+        print(f"Exported STEP file to: {step_file} (using Part module)")
+except Exception as e:
+    print(f"Error exporting STEP file: {e}")
+
+# Export to STL format
+try:
+    stl_file = os.path.join(models_dir, "two_stage_steam_rocket.stl")
+    
+    # Using Mesh module
+    try:
+        import Mesh
+        combined_mesh = Mesh.Mesh()
+        for obj in doc.Objects:
+            if hasattr(obj, "Shape"):
+                mesh = Mesh.Mesh(obj.Shape.tessellate(0.1))
+                combined_mesh.addMesh(mesh)
+        combined_mesh.write(stl_file)
+        print(f"Exported STL file to: {stl_file}")
+    except Exception as e:
+        print(f"Could not export combined STL: {e}")
+        # Export individual meshes
+        for i, obj in enumerate(doc.Objects):
+            if hasattr(obj, "Shape"):
+                obj_stl = os.path.join(models_dir, f"{obj.Name}.stl")
+                obj.Shape.exportStl(obj_stl)
+        print(f"Exported individual STL files to: {models_dir}")
+except Exception as e:
+    print(f"Error exporting STL file: {e}")
+
+print("Steam Rocket model created successfully!")
+App.ActiveDocument.recompute()

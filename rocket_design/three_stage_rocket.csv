@@ -1,0 +1,14 @@
+name,type,length,diameter,thickness,material,comments
+Payload Fairing,cone,13975.5,6600.0,10,composite,Houses 45000 kg payload
+Third Stage (S-IVB) Body,tube,12470.457843432356,6600.0,20,aluminum,Contains 106900 kg propellant
+Third Stage (S-IVB) Engine Section,tube,50,6600.0,30,stainless steel,Engine mount structure
+Third Stage (S-IVB) Nozzle,cone,5329.542156567644,4019.511319540987,10,inconel,"Expansion ratio: 80.0, Throat diameter: 449.4 mm"
+Interstage 1/2,cone,2490.0,10100.0,15,aluminum,Connects stages 1 and 2
+Second Stage (S-II) Body,tube,16951.378753793684,10100.0,20,aluminum,Contains 456100 kg propellant
+Second Stage (S-II) Engine Section,tube,50,10100.0,30,stainless steel,Engine mount structure
+Second Stage (S-II) Nozzle,cone,7948.621246206317,6324.5687298913645,10,inconel,"Expansion ratio: 40.0, Throat diameter: 1000.0 mm"
+Interstage 0/1,tube,4200.0,10100.0,15,aluminum,Connects stages 0 and 1
+First Stage (S-IC) Body,tube,33586.89800631851,10100.0,20,aluminum,Contains 2159000 kg propellant
+First Stage (S-IC) Engine Section,tube,50,10100.0,30,stainless steel,Engine mount structure
+First Stage (S-IC) Nozzle,cone,8413.101993681496,8242.086227733314,10,inconel,"Expansion ratio: 10.0, Throat diameter: 2606.4 mm"
+First Stage Fins,fins,12600.0,1515.0,10,titanium,Aerodynamic stabilizers (count=4)
