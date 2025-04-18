@@ -1,0 +1,49 @@
+Nose Cone Profile Metrics Comparison
+====================================
+
+Conical Profile:
+  Volume: 4449.28 mm³
+  Surface Area: 81850975201807328.00 mm²
+  Center of Mass: 12.23 mm from tip
+  Fineness Ratio: 0.07
+  Tip Bluntness: 0.0000
+
+Ogive Profile:
+  Volume: 1628.89 mm³
+  Surface Area: 847.67 mm²
+  Center of Mass: 13.00 mm from tip
+  Fineness Ratio: 0.07
+  Tip Bluntness: 0.1322
+
+Elliptical Profile:
+  Volume: 2170.02 mm³
+  Surface Area: 999.87 mm²
+  Center of Mass: 14.63 mm from tip
+  Fineness Ratio: 0.07
+  Tip Bluntness: 0.1322
+
+Von Kármán Profile:
+  Volume: 628.58 mm³
+  Surface Area: 451.49 mm²
+  Center of Mass: 31.59 mm from tip
+  Fineness Ratio: 0.07
+  Tip Bluntness: 0.0000
+
+Tangent Ogive Profile:
+  Volume: 28.64 mm³
+  Surface Area: 85.04 mm²
+  Center of Mass: 38.55 mm from tip
+  Fineness Ratio: 0.07
+  Tip Bluntness: 0.1322
+
+Profile Recommendations:
+=======================
+1. For minimum drag at supersonic speeds: Von Kármán
+2. For minimum drag at subsonic/transonic speeds: Tangent Ogive
+3. For ease of manufacturing: Conical
+4. For balanced performance: Elliptical
+5. For optimized volume-to-drag ratio: Ogive
+
+Note: The optimal profile depends on the specific application and flight regime.
+For lightweight drone applications, the elliptical or ogive profiles often provide
+a good balance between aerodynamic performance and ease of manufacturing.

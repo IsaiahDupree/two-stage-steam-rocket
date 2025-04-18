@@ -1,0 +1,12 @@
+{
+  "inner_diameter": 67.0,
+  "outer_diameter": 78.0,
+  "base_ring_depth": 13.0,
+  "cone_angle": 52.0,
+  "profile_type": "rounded_elliptical",
+  "use_lightweighting": true,
+  "shell_thickness": 1.2,
+  "wall_thinning_factor": 1.0,
+  "internal_ribs": true,
+  "rib_count": 6
+}

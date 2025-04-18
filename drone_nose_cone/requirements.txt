@@ -1,0 +1,4 @@
+solidpython>=1.0.0
+numpy>=1.20.0
+matplotlib>=3.5.0  # For 2D visualization
+pyvista>=0.36.0    # For 3D visualization
